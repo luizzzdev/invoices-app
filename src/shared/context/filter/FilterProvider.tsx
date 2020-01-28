@@ -1,35 +1,25 @@
-import React, { useMemo, useState, useCallback, useReducer } from 'react'
+import React, { useMemo, useReducer } from 'react'
 import { Provider } from './context'
-import FilterReducer from './store'
-
+import FilterReducer from './reducer'
 
 const defaultState = {
   filter: {},
   pagination: { activePage: 1 }
 }
 
+type FilterProviderProps = {
+  initialState: object;
+}
 
-
-// @ts-ignore
-const FilterProvider = ({ children, initialState }) => {
-  // const [filter, setFilter] = useState<any>({})
-
-  // @ts-ignore
-  const [state, dispatch] = useReducer(FilterReducer, {...defaultState, ...initialState})
-
-  // const setPropertyInFilter = useCallback((propertyName: string, value: any) => {
-  //   setFilter((prevState: any) => ({
-  //     ...prevState,
-  //     [propertyName]: value
-  //   }))
-  // }, [])
+const FilterProvider: React.FC<FilterProviderProps> = ({ children, initialState }) => {
+  const [state, dispatch] = useReducer(FilterReducer, { ...defaultState, ...initialState })
 
   const setFilter = (propertyName: string, value: any) => {
-    dispatch({ type: 'SET_FILTER', payload: { propertyName, value }})
+    dispatch({ type: 'SET_FILTER', payload: { propertyName, value } })
   }
 
   const setActivePage = (activePage: number) => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { activePage }})
+    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { activePage } })
   }
 
   const value = useMemo(() => ({
@@ -38,9 +28,6 @@ const FilterProvider = ({ children, initialState }) => {
     setFilter,
     setActivePage
   }), [state.filter, state.pagination])
-
-  console.log('Rendering again with state: ', state)
-
 
   return (
     <Provider value={value}>

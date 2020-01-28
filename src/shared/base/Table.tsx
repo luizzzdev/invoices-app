@@ -1,7 +1,6 @@
 import { Table as BaseTable, TableProps } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-// @ts-ignore
-const Table = styled<TableProps>(BaseTable)``
+const Table: React.FC<TableProps> = styled(BaseTable)``
 
 export default Table

@@ -1,14 +1,10 @@
-import { Consumer } from "./context";
+import { Consumer } from './context';
 import React from 'react'
-import { Filter } from "./filter";
 
-// @ts-ignore 
-const withFilterConsumer = (WrappedComponent)  => (props) => {
-  // @ts-ignore 
+const withFilterConsumer = (WrappedComponent: React.FC) => (props: any) => {
   return (
-    // @ts-ignore 
     <Consumer>
-      { (value: any) => <WrappedComponent {...value} {...props}/>}
+      {(value: any) => <WrappedComponent {...value} {...props} />}
     </Consumer>
   )
 }

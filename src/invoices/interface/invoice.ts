@@ -1,5 +1,5 @@
-import { Company } from "../../shared/interface/company";
-import { PaymentMethod } from "../../shared/interface/paymentMethod";
+import { Company } from '../../shared/interface/company';
+import { PaymentMethod } from '../../shared/interface/paymentMethod';
 
 export interface Invoice {
   id: number;
@@ -8,5 +8,5 @@ export interface Invoice {
   value: number;
   paid: boolean;
   company: Company;
-  paymentMethod: PaymentMethod
+  paymentMethod: PaymentMethod;
 }

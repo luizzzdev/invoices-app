@@ -1,7 +1,6 @@
 import { Container as BaseContainer, ContainerProps } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-// @ts-ignore
-const Container = styled<ContainerProps>(BaseContainer)``
+const Container: React.FC<ContainerProps> = styled(BaseContainer)``
 
 export default Container

@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { Filter } from "./filter";
+import { createContext } from 'react';
+import { Filter } from './filter';
 
 interface GenericFilter {}
 
