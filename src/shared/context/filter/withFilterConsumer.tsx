@@ -1,12 +1,12 @@
 import { Consumer } from './context';
-import React from 'react'
+import React, { FunctionComponent, ComponentType } from 'react';
 
-const withFilterConsumer = (WrappedComponent: React.FC) => (props: any) => {
+const withFilterConsumer = <P extends object>(WrappedComponent: ComponentType<P>): FunctionComponent<P> => (props: P)  => {
   return (
     <Consumer>
-      {(value: any) => <WrappedComponent {...value} {...props} />}
+      {(value) => <WrappedComponent {...value} {...props} />}
     </Consumer>
-  )
-}
+  );
+};
 
-export default withFilterConsumer
+export default withFilterConsumer;

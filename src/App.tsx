@@ -4,8 +4,8 @@ import FilterProvider from './shared/context/filter/FilterProvider';
 
 const initialState = {
   pagination: { activePage: 1},
-  filter: {}
-}
+  filter: {},
+};
 
 const App: React.FC = () => {
   return (
@@ -15,6 +15,6 @@ const App: React.FC = () => {
       </FilterProvider>
     </div>
   );
-}
+};
 
 export default App;

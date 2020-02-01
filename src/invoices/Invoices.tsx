@@ -1,29 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, FunctionComponent, useContext } from 'react';
 
 import Container from '../shared/base/Container';
 import Select from '../shared/base/Select';
-import Table from '../shared/base/Table';
+import Table, { TableCell, TableRow, TableHeader, TableBody, TableHeaderCell } from '../shared/base/Table';
 import { Company } from '../shared/interface/company';
 import CompaniesResource from '../shared/resource/companies';
 import { Invoice } from './interface/invoice';
 import InvoicesResource from './resource/invoices';
-import PaymentMethodsResource from '../shared/resource/paymentMethods'
+import PaymentMethodsResource from '../shared/resource/paymentMethods';
 import { PaymentMethod } from '../shared/interface/paymentMethod';
-import withFilterConsumer from '../shared/context/filter/withFilterConsumer';
-import { Filter } from '../shared/context/filter/filter';
 import Pagination from '../shared/base/Pagination';
+import FilterContext from '../shared/context/filter/context';
+import { Filter } from '../shared/context/filter/filter';
 
 const formatCompanyForSelect = (company: Company): CompanySelect => ({
   text: company.name,
   value: JSON.stringify(company),
-  key: company.id
-})
+  key: company.id,
+});
 
 const formatPaymentMethod = (paymentMethod: PaymentMethod): PaymentMethodSelect => ({
   text: paymentMethod.name,
   value: JSON.stringify(paymentMethod),
-  key: paymentMethod.id
-})
+  key: paymentMethod.id,
+});
 
 interface CompanySelect {
   text: string;
@@ -37,71 +37,72 @@ interface PaymentMethodSelect {
   key: number;
 }
 
-interface InvoicesFilter {
+type InvoicesFilter = Filter<{
   paymentMethod: PaymentMethod;
   company: Company;
-}
+}>
 
-type InvoicesType = Filter<InvoicesFilter>
 
-const Invoices: React.FC<InvoicesFilter> = ({ filter, pagination, setFilter, setActivePage }) => {
-  const [invoices, setInvoices] = useState<Array<Invoice>>([])
-  const [companies, setCompanies] = useState<Array<CompanySelect>>([])
-  const [paymentMethods, setPaymentMethods] = useState<Array<PaymentMethodSelect>>([])
+const Invoices: FunctionComponent = () => {
+  const [invoices, setInvoices] = useState<Array<Invoice>>([]);
+  const [companies, setCompanies] = useState<Array<CompanySelect>>([]);
+  const [paymentMethods, setPaymentMethods] = useState<Array<PaymentMethodSelect>>([]);
+
+  const { filter, pagination, setFilter, setActivePage } = useContext<InvoicesFilter>(FilterContext);
 
   const fetchInvoices = useCallback(async (companyId: number | null, paymentMethodId: number | null) => {
-    const payload = await InvoicesResource.get(companyId, paymentMethodId, pagination.activePage)
-    setInvoices(payload)
-  }, [pagination.activePage])
+    const payload = await InvoicesResource.get(companyId, paymentMethodId, pagination.activePage);
+    setInvoices(payload);
+  }, [pagination.activePage]);
 
   const fetchCompanies = useCallback(async () => {
-    const payload = await CompaniesResource.get()
-    const formattedCompanies = payload.map(formatCompanyForSelect)
-    setCompanies(formattedCompanies)
-  }, [])
+    const payload = await CompaniesResource.get();
+    const formattedCompanies = payload.map(formatCompanyForSelect);
+    setCompanies(formattedCompanies);
+  }, []);
 
 
 
   const fetchPaymentMethods = useCallback(async () => {
-    const payload = await PaymentMethodsResource.get()
-    const formattedPaymentMethods = payload.map(formatPaymentMethod)
-    setPaymentMethods(formattedPaymentMethods)
-  }, [])
+    const payload = await PaymentMethodsResource.get();
+    const formattedPaymentMethods = payload.map(formatPaymentMethod);
+    setPaymentMethods(formattedPaymentMethods);
+  }, []);
 
 
 
   useEffect(() => {
-    const companyId = filter && filter.company ? filter.company.id : null
-    const paymentMethodId = filter && filter.paymentMethod ? filter.paymentMethod.id : null
-    fetchInvoices(companyId, paymentMethodId)
-  }, [fetchInvoices, filter])
+    const companyId = filter && filter.company ? filter.company.id : null;
+    const paymentMethodId = filter && filter.paymentMethod ? filter.paymentMethod.id : null;
+    fetchInvoices(companyId, paymentMethodId);
+  }, [fetchInvoices, filter]);
 
   useEffect(() => {
-    fetchCompanies()
-  }, [fetchCompanies, filter])
+    fetchCompanies();
+  }, [fetchCompanies, filter]);
 
   useEffect(() => {
-    fetchPaymentMethods()
-  }, [fetchPaymentMethods])
+    fetchPaymentMethods();
+  }, [fetchPaymentMethods]);
 
 
-  const onChangeHandler = (callback: Function) => (_, data) => callback(data.value)
+  const onChangeHandler = (callback: Function) => (_: any, data: any) => callback(data.value);
 
-  const selectPaymentMethodHandler = (paymentMethod: string) => {
-    setFilter('paymentMethod', JSON.parse(paymentMethod) as PaymentMethod)
-  }
+  const selectPaymentMethodHandler = (paymentMethod: string): void => {
+    setFilter('paymentMethod', JSON.parse(paymentMethod) as PaymentMethod);
+  };
 
-  const selectCompanyHandler = (company: string) => {
-    setFilter('company', JSON.parse(company) as Company)
-  }
+  const selectCompanyHandler = (company: string): void => {
+    setFilter('company', JSON.parse(company) as Company);
+  };
 
-  const pageChangeHandler = (_, data) => setActivePage(data.activePage)
+  const pageChangeHandler = (_: any, data: any): void => setActivePage(data.activePage);
 
-  const rows = (invoices || []).map(invoice => <Table.Row key={invoice.id}>
-    <Table.Cell>{invoice.company.name}</Table.Cell>
-    <Table.Cell>{invoice.paymentMethod.name}</Table.Cell>
-    <Table.Cell>{invoice.value}</Table.Cell>
-  </Table.Row>)
+  const rows = (invoices || []).map(invoice => <TableRow key={invoice.id}>
+    <TableCell>{invoice.company.name}</TableCell>
+    <TableCell>{invoice.paymentMethod.name}</TableCell>
+    <TableCell>{invoice.value}</TableCell>
+  </TableRow>);
 
   return (
     <Container>
@@ -112,24 +113,24 @@ const Invoices: React.FC<InvoicesFilter> = ({ filter, pagination, setFilter, set
         <Select options={paymentMethods} onChange={onChangeHandler(selectPaymentMethodHandler)} value={JSON.stringify(filter.paymentMethod)} placeholder="Payment method" />
       </Container>
       <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Company Name</Table.HeaderCell>
-            <Table.HeaderCell>Payment Method</Table.HeaderCell>
-            <Table.HeaderCell>Value</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+        <TableHeader>
+          <TableRow>
+            <TableHeaderCell>Company Name</TableHeaderCell>
+            <TableHeaderCell>Payment Method</TableHeaderCell>
+            <TableHeaderCell>Value</TableHeaderCell>
+          </TableRow>
+        </TableHeader>
 
-        <Table.Body>
+        <TableBody>
           {rows}
-        </Table.Body>
+        </TableBody>
       </Table>
 
       <Container textAlign="center">
         <Pagination defaultActivePage={1} totalPages={10} onPageChange={pageChangeHandler} />
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default withFilterConsumer(Invoices) 
+export default Invoices; 

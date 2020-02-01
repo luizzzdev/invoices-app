@@ -1,17 +1,14 @@
 import { createContext } from 'react';
-import { Filter } from './filter';
 
-interface GenericFilter {}
-
-const FilterContext = createContext<Filter<GenericFilter>>({
+const FilterContext = createContext<any>({
   filter: {},
-  pagination: {},
+  pagination: { activePage: 1 },
   setFilter: () => {},
-  setActivePage: () => {}
-})
+  setActivePage: () => {},
+});
 
-export default FilterContext
+export default FilterContext;
 
-const { Consumer, Provider } = FilterContext
+const { Consumer, Provider } = FilterContext;
 
-export { Consumer, Provider }
+export { Consumer, Provider };
