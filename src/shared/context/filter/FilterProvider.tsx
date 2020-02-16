@@ -15,11 +15,11 @@ type FilterProviderProps = {
 const FilterProvider: React.FC<FilterProviderProps> = ({ children, initialState }) => {
   const [state, dispatch] = useReducer(FilterReducer, { ...defaultState, ...initialState });
 
-  const setFilter = (propertyName: string, value: any) => {
+  const setFilter = (propertyName: string, value: any): void => {
     dispatch({ type: 'SET_FILTER', payload: { propertyName, value } });
   };
 
-  const setActivePage = (activePage: number) => {
+  const setActivePage = (activePage: number): void => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { activePage } });
   };
 

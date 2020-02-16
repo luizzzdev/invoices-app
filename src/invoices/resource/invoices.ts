@@ -12,13 +12,13 @@ const InvoicesResource = {
   async get(companyId: number | null, paymentMethodId: number | null, page: number): Promise<Array<Invoice>> {
     const params: InvoiceParams = {
       _expand: ['company', 'paymentMethod'],
-      _page: page
+      _page: page,
     };
 
-    if(companyId) params.companyId = companyId
-    if(paymentMethodId) params.paymentMethodId = paymentMethodId
+    if(companyId) params.companyId = companyId;
+    if(paymentMethodId) params.paymentMethodId = paymentMethodId;
     return (await Api.get('/invoices', { params })).data;
-  }
+  },
 };
 
 export default InvoicesResource;
